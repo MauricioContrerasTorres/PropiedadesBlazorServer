@@ -1,0 +1,61 @@
+﻿<h3>ConfirmacionBorrado</h3>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalConfirmacionBorrar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirmación Borrado</h5>
+                <button type="button" class="close" data-dismiss="modal" 
+                    @onclick="()=>ConfirmacionOnCambia(false)" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                ¿Está seguro que desea borrar?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="()=>ConfirmacionOnCambia(false)">Cerrar</button>
+                @if (procesoIniciado)
+                {
+                    <button type="button" class="btn btn-secondary">
+                        <i class="bg-info bi-trash-fill"></i>&nbsp; Procesando
+                    </button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-danger" @onclick="()=>ConfirmacionOnCambia(true)">
+                        <i class="bg-info bi-trash-fill"></i>&nbsp; Borrar
+                    </button>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    public bool procesoIniciado = false;
+
+    [Parameter]
+    public EventCallback<bool> CambioConfirmacion { get; set; }
+
+    [Parameter]
+    public bool ProcesandoComponentePadre { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        procesoIniciado = ProcesandoComponentePadre;
+    }
+
+    protected async Task ConfirmacionOnCambia(bool valor)
+    {
+        if (valor)
+        {
+            procesoIniciado = true;
+        }
+
+        await CambioConfirmacion.InvokeAsync(valor);
+    }
+
+}

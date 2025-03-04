@@ -1,0 +1,73 @@
+﻿@page "/blazor-javascript"
+@inject IJSRuntime jsRuntime
+<h3>Blazor/Javascript</h3>
+
+<div class="row mt-4">
+    <div class="col-4">
+        <button class="btn btn-secondary" @onclick="(() => DemoConfirmacion(MensajeConfirmacion))">Demo botón confirmar</button>
+    </div>
+    
+</div>
+
+<div class="row mt-4">
+    <div class="col-4">
+        <button class="btn btn-success" @onclick="DemoSuccess">Demo Toastr Succes</button>
+        <button class="btn btn-danger" @onclick="DemoError">Demo Toastr Error</button>
+    </div>
+
+</div>
+
+<div class="row mt-4">
+    <div class="col-4">
+        <button class="btn btn-success" @onclick="DemoSuccessSwal">Demo Swal Succes</button>
+        <button class="btn btn-danger" @onclick="DemoErrorSwal">Demo Swal Error</button>
+    </div>
+
+</div>
+
+<div class="row">
+    @if (ConfirmarResultado)
+    {
+        <p>Confirmación Hecha</p>
+    }
+    else
+    {
+        <p>Confirmación Pendiente</p>
+    }
+
+</div>
+
+@code {
+    private string MensajeConfirmacion = "¿Está seguro de dar click?";
+
+    private bool ConfirmarResultado { get; set; }
+
+    private async Task DemoConfirmacion(string mensaje)
+    {
+        ConfirmarResultado = await jsRuntime.InvokeAsync<bool>("confirm", mensaje);
+    }
+
+    private async Task DemoSuccess()
+    {
+        //await jsRuntime.InvokeVoidAsync("ShowToastr","success", "Tarea completada");
+        await jsRuntime.ToastrSuccess("Tarea completada");
+    }
+
+    private async Task DemoError()
+    {
+        //await jsRuntime.InvokeVoidAsync("ShowToastr", "error", "Tarea fallida");
+        await jsRuntime.ToastrError("Tarea fallida");
+    }
+
+    private async Task DemoSuccessSwal()
+    {
+       await jsRuntime.InvokeVoidAsync("ShowSwal","success", "Tarea completada");
+       
+    }
+
+    private async Task DemoErrorSwal()
+    {
+       await jsRuntime.InvokeVoidAsync("ShowSwal", "error", "Tarea fallida");
+       
+    }
+}

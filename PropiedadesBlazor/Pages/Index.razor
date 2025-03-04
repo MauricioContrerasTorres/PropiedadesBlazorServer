@@ -1,0 +1,49 @@
+﻿@page "/"
+@using Modelos.DTO;
+@using IRepositorio;
+@inject IPropiedadRepositorio PropiedadesRepositorio
+
+<PageTitle>Inicio</PageTitle>
+
+<h1 class="text-center">Últimas Propiedades</h1>
+
+<div class="row">
+    @foreach(var propiedad in propiedadesDTO)
+    {
+        <div class="col-3">
+            <div class="card">
+                <div class="card-header">
+                    <h3>@propiedad.Nombre</h3>
+                </div>
+                <div class="card-body">
+                    @if(propiedad.ImagenPropiedad.Count() > 0)
+                    {
+                        @foreach(var imagen in propiedad.ImagenPropiedad)
+                        {
+                            @*<img src="@imagen.UrlImagenPropiedad" class="img-fluid">*@
+                            <img src="@($"{imagen.UrlImagenPropiedad}")" class="img-fluid">
+                        }
+                    }
+                    else
+                    {
+                        <h2>nones!</h2>
+                    }
+                </div>
+                <div class="card-footer">
+                    <NavLink href="@($"detalle-propiedad/{propiedad.Id}")">&nbsp;Más Información</NavLink>
+                    
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+@code{
+    private IEnumerable<PropiedadDTO> propiedadesDTO { get; set; } = new List<PropiedadDTO>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        propiedadesDTO = await PropiedadesRepositorio.GetAllPropiedades();
+    }
+}
